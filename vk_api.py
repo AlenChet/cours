@@ -27,6 +27,24 @@ class Vk_api:
 
         return response.json()['response']['items']
 
+
+    def save_photos_to_json(self, file_path):
+        photos = self.get_vk_photos()[:5]
+        data = []
+        for phot, photo in enumerate(photos):
+            if phot >=5:
+                break
+            likes = photo['likes']['count']
+            url = photo['sizes'][-1]['url']
+            size = photo['sizes'][-1]['type']
+            file_name = f"{likes}.jpg"
+            data.append({'file_name': file_name, 'size': size})
+            # скачиваем фото:
+            with open(file_name, 'wb') as file:
+                file.write(requests.get(url).content)
+        with open(file_path, 'w') as file:
+            json.dump(data, file, default=str, ensure_ascii=False, indent=2, separators=(',', ':'))
+
     def save_photos_to_csv(self, file_path):
         photos = self.get_vk_photos()
         with open(file_path, 'w', newline='') as file:
@@ -37,17 +55,3 @@ class Vk_api:
                 date = datetime.fromtimestamp(photo['date'])
                 likes = photo['likes']['count']
                 writer.writerow([photo_id, date, likes])
-
-    def save_photos_to_json(self, file_path):
-        photos = self.get_vk_photos()[:5]
-        data = []
-        for photo in photos:
-            photo_dict = {
-                'id': photo['id'],
-                'date': datetime.fromtimestamp(photo['date']),
-                'max_size': max(photo['sizes'], key=lambda x: x['width'])['width'],
-                'likes': photo['likes']['count']
-            }
-            data.append(photo_dict)
-        with open(file_path, 'w') as file:
-            json.dump(data, file, default=str, ensure_ascii=False, indent=2, separators=(',', ':'))

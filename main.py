@@ -1,13 +1,13 @@
 from vk_api import Vk_api
 from ya_api import YandexDisk
-
+from config import access_token, ya_token
 
 if __name__=='__main__':
     user_id = input("Введите id пользователя ВКонтакте: ")
-    access_token = input("Введите VK token: ")
+    access_token = access_token #input("Введите VK token: ")
     vk_api = Vk_api(user_id, access_token)
 
-    yandex_token = input("Введите oauth-токен от Яндекс: ")
+    yandex_token = ya_token#input("Введите oauth-токен от Яндекс: ")
     yandex_api = YandexDisk(yandex_token)
 
     folder_name = input("Введите имя папки на Яндекс Диске для сохранения фотографий: ")
@@ -33,6 +33,6 @@ if __name__=='__main__':
     photos_j = vk.get_vk_photos()
     vk.save_photos_to_json('photos.json')
 
-    # Если нужен в формате csv все фото профиля:
+    # Если нужен в формате csv фотки профиля:
     # vk = Vk_api(user_id=user_id, access_token=access_token)
     # vk.save_photos_to_csv('photos.csv')
